@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>WASM dilithium crystals signing test</title>
+</head>
+
+<body>
+    <script src="./dilithium.js"></script>
+    <script>
+        Module.onRuntimeInitialized = async _ => {
+            console.log('Version:', Module._version());
+            console.log('Generated Key Pair:\n', Module._generate());
+        };
+    </script>
+</body>
+
+</html>

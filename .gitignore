@@ -19,3 +19,8 @@ tvecs5aes
 tmillion2
 tmillion3
 tmillion5
+.vscode
+build/
+*.wasm
+*.gch
+
