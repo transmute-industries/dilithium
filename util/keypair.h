@@ -2,13 +2,7 @@
 #define KEYPAIR_H
 
 #include "../ref/params.h"
-
-#define CRYPTO_PUBLICKEYBYTES_B64 ((CRYPTO_PUBLICKEYBYTES + 2) / 3 * 4) + 1
-#define CRYPTO_SECRETKEYBYTES_B64 ((CRYPTO_SECRETKEYBYTES + 2) / 3 * 4) + 1
-#define CRYPTO_SHAKEBYTES 32
-#define CRYPTO_SHAKEBYTES_B64 ((CRYPTO_SHAKEBYTES + 2) / 3 * 4) + 1
-#define CRYPTO_BYTES_B64 ((CRYPTO_BYTES + 2) / 3 * 4) + 1
-
+#include "common.h"
 struct Keypair
 {
     char kty[8]; //key type

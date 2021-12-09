@@ -8,6 +8,7 @@
 #include "../ref/params.h"
 #include "../ref/sign.h"
 #include "../ref/fips202.h"
+#include "common.h"
 #include "base64.h"
 #include "keypair.h"
 #include "api.h"
