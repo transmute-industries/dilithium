@@ -58,11 +58,15 @@ int generate(struct Keypair *keypair)
     shake256(sk_shake, 32, sk, CRYPTO_SECRETKEYBYTES);
 
     if (VDEBUG) printf("\tapi:generate::encoding\n");
-    Base64encode(keypair->pks, (const char*) pk_shake, CRYPTO_SHAKEBYTES);
-    Base64encode(keypair->sks, (const char*) sk_shake, CRYPTO_SHAKEBYTES);
-    Base64encode(keypair->pk, (const char*) pk, CRYPTO_PUBLICKEYBYTES);
-    Base64encode(keypair->sk, (const char*) sk, CRYPTO_SECRETKEYBYTES);
+    Base64encode(keypair->xs, (const char*) pk_shake, CRYPTO_SHAKEBYTES);
+    Base64encode(keypair->ds, (const char*) sk_shake, CRYPTO_SHAKEBYTES);
+    Base64encode(keypair->x, (const char*) pk, CRYPTO_PUBLICKEYBYTES);
+    Base64encode(keypair->d, (const char*) sk, CRYPTO_SECRETKEYBYTES);
 
+    strcpy(keypair->kty, "PQK");
+    strcpy(keypair->alg, "DICRY");
+    strcpy(keypair->pset, "3");
+    
     if (VDEBUG) printf("\tapi:generate::encoded\n");
     if (VDEBUG) {
         int j = 0;

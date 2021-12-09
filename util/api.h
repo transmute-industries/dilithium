@@ -3,9 +3,12 @@
 
 #define API_VERSION 1
 
-static const bool DEBUG = false;
-static const bool VERBOSE = false;
-static const bool VDEBUG = DEBUG && VERBOSE;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+static bool DEBUG;
+static bool VERBOSE;
+static bool VDEBUG;
+#pragma GCC diagnostic pop
 
 int version(void);
 int generate(struct Keypair *keypair);
