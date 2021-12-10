@@ -11,7 +11,7 @@
 #include "common.h"
 #include "base64.h"
 #include "keypair.h"
-#include "api.h"
+#include "uapi.h"
 #include "cli.h"
 
 /*************************************************

@@ -1,5 +1,5 @@
-#ifndef API_H
-#define API_H
+#ifndef _UAPI_H
+#define _UAPI_H
 
 #define API_VERSION 1
 

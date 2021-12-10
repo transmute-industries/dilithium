@@ -14,7 +14,7 @@
 
 #include "keypair.h"
 #include "cli.h"
-#include "api.h"
+#include "uapi.h"
 
 static const char *TEST_MESSAGE = "TESTING SIGNATURES";
 

@@ -7,11 +7,24 @@
 </head>
 
 <body>
+    <pre id="logger">
+
+    </pre>
+    <script>
+        console.log('Loading up test script for Dilithium Crystals...');
+        console.log('Envrionment info', navigator);
+    </script>
     <script src="./dilithium.js"></script>
     <script>
         Module.onRuntimeInitialized = async _ => {
-            console.log('Version:', Module._version());
-            console.log('Generated Key Pair:\n', Module._generate());
+            console.log('Version:', Module._dilithiumVersion());
+            var strPtr = Module._dilithiumGenerate();
+            var max_string_len = 10240;
+            var output_array = new Uint8Array(Module.HEAPU8.buffer, strPtr, max_string_len);
+            output_array = output_array.slice(0, output_array.indexOf(0));
+            var keyPair = new TextDecoder('utf8').decode(output_array);
+            console.log('Generated Key Pair:\n', keyPair);
+            document.getElementById('logger').innerHTML = keyPair;
         };
     </script>
 </body>
