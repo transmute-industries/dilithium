@@ -11,48 +11,54 @@ HEADERS = ../ref/config.h ../ref/params.h ../ref/api.h ../ref/sign.h ../ref/pack
   ../ref/polyvec.h ../ref/poly.h ../ref/ntt.h \
   ../ref/reduce.h ../ref/rounding.h ../ref/symmetric.h ../ref/randombytes.h \
   common.h base64.h keypair.h uapi.h
-WASM_HEADERS = -I ../ref/config.h -I ../ref/params.h -I ../ref/api.h -I ../ref/sign.h -I ../ref/packing.h \
-  -I ../ref/polyvec.h -I ../ref/poly.h -I ../ref/ntt.h \
-  -I ../ref/reduce.h -I ../ref/rounding.h -I ../ref/symmetric.h -I ../ref/randombytes.h -I ../ref/fips202.h \
-  -I common.h -I base64.h -I keypair.h -I uapi.h 
+
 KECCAK_SOURCES = $(SOURCES) ../ref/fips202.c ../ref/symmetric-shake.c
 KECCAK_HEADERS = $(HEADERS) ../ref/fips202.h
+
 AES_SOURCES = $(SOURCES) ../ref/fips202.c ../ref/aes256ctr.c ../ref/symmetric-aes.c
 AES_HEADERS = $(HEADERS) ../ref/fips202.h ../ref/aes256ctr.h
 
-WEBASM_COMPILER = emcc
+WEBASM_COMPILER ?= emcc
 WEBASM_EXPORTS = _dilithiumGenerate, _dilithiumSign, _dilithiumVerify, _dilithiumVersion, _malloc
-# -s EXPORT_ALL=1 -s LINKABLE=1 may be desireable for some scenarios
-# -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap"]' 
-# -s ERROR_ON_UNDEFINED_SYMBOLS=0
-# -s ASSERTIONS=1
-# -s SAFE_HEAP=1 
-WEBASM_FLAGS = $(WASM_HEADERS) \
-  -s WASM=1 \
+WEBASM_FLAGS ?= -O3 -s WASM=1 \
   -D DILITHIUM_MODE=3 \
   -s EXPORTED_FUNCTIONS="[$(WEBASM_EXPORTS)]"
 
 WEBASM_SOURCES = websign.c $(KECCAK_SOURCES)
+WASM_HEADERS = -I ../ref/config.h -I ../ref/params.h -I ../ref/api.h -I ../ref/sign.h -I ../ref/packing.h \
+  -I ../ref/polyvec.h -I ../ref/poly.h -I ../ref/ntt.h \
+  -I ../ref/reduce.h -I ../ref/rounding.h -I ../ref/symmetric.h -I ../ref/randombytes.h -I ../ref/fips202.h \
+  -I common.h -I base64.h -I keypair.h -I uapi.h 
 WEBASM_OUTPUT = dilithium.html
 
 # base64.c
 CLI_SOURCES = cli.c $(KECCAK_SOURCES)
 CLI_OUTPUT = dilithium
 
-.PHONY: all clean
+.PHONY: all clean cli
 
 all: \
    cli \
    web
 
 web: $(WEBASM_SOURCES)
-	$(WEBASM_COMPILER) $(WEBASM_SOURCES) $(WEBASM_FLAGS) \
-		-o $(WEBASM_OUTPUT)
+	$(WEBASM_COMPILER) $(WEBASM_SOURCES) $(WASM_HEADERS) \
+	$(WEBASM_FLAGS) \
+	-o $(WEBASM_OUTPUT)
 	
-cli: $(CLI_SOURCES) $(HEADERS) 
+cli: \
+	cli_generate
+
+cli_generate: $(CLI_SOURCES) $(HEADERS) 
 	$(CC) \
-		-fPIC $(CFLAGS) $(DILITHIUM_MODE) \
-		-o $(CLI_OUTPUT) $(CLI_SOURCES)
+	-fPIC $(CFLAGS) $(DILITHIUM_MODE) \
+	-o $(CLI_OUTPUT) $(CLI_SOURCES)
+
+
+release:
+	cp -v wasm_test.html ../docs/index.html
+	cp -v dilithium.js ../docs/
+	cp -v dilithium.wasm ../docs/
 
 clean:
 	rm -f *.gcno *.gcda *.lcov
