@@ -22,25 +22,29 @@
         const CRYPTO_SECRETKEYBYTES_B64 = 3373;
         const KEYPAIR_BYTES_B64 = CRYPTO_SECRETKEYBYTES_B64 + CRYPTO_PUBLICKEYBYTES_B64 + (CRYPTO_BYTES_B64 * 2) + 64;
 
-        var getCString = function(strPtr, size) {
+        var getCString = function(strPtr, size = 1024, nullTerm = false) {
             var output_array = new Uint8Array(Module.HEAPU8.buffer, strPtr, size);
-            output_array = output_array.slice(0, output_array.indexOf(0)); // assumes null termination
+            var endIdx = size;
+            if (nullTerm) {
+                endIdx = output_array.indexOf(0); // assumes null termination
+            } 
+            output_array = output_array.slice(0, endIdx); 
             var stringValue = new TextDecoder('utf8').decode(output_array);
-            return stringValue.trim();
+            return stringValue; //.trim();
         };
 
         Module.onRuntimeInitialized = async _ => {
             console.log('Version:', Module._dilithiumVersion());
             var keyPtr = Module._dilithiumGenerate();
-            var keyPair = getCString(keyPtr, KEYPAIR_BYTES_B64);
+            var keyPair = getCString(keyPtr, KEYPAIR_BYTES_B64, true);
+            console.log('Generated Key Pair:\n', keyPair);
             var jsonKeyPair = JSON.parse(keyPair)
             console.log('Generated Key Pair(JSON):\n', jsonKeyPair);
-            // console.log('Generated Key Pair:\n', keyPair);
             document.getElementById('logger').innerHTML = keyPair;
 
             var m = 'TESTING SIGNING WITH CRYSTALS';
             var sigPtr = Module._dilithiumSign(m, jsonKeyPair.d);
-            var sig = getCString(sigPtr, CRYPTO_BYTES_B64*2);
+            var sig = getCString(sigPtr, CRYPTO_BYTES_B64);
             console.log('Signature of:', m);
             console.log(sig);
             var verified = Module._dilithiumVerify(sig, m, jsonKeyPair.x);
