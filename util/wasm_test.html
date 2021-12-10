@@ -16,15 +16,35 @@
     </script>
     <script src="./dilithium.js"></script>
     <script>
+        const CRYPTO_BYTES = 2420;
+        const CRYPTO_BYTES_B64 = 3229;
+        const CRYPTO_PUBLICKEYBYTES_B64 = 1753;
+        const CRYPTO_SECRETKEYBYTES_B64 = 3373;
+        const KEYPAIR_BYTES_B64 = CRYPTO_SECRETKEYBYTES_B64 + CRYPTO_PUBLICKEYBYTES_B64 + (CRYPTO_BYTES_B64 * 2) + 64;
+
+        var getCString = function(strPtr, size) {
+            var output_array = new Uint8Array(Module.HEAPU8.buffer, strPtr, size);
+            output_array = output_array.slice(0, output_array.indexOf(0)); // assumes null termination
+            var stringValue = new TextDecoder('utf8').decode(output_array);
+            return stringValue.trim();
+        };
+
         Module.onRuntimeInitialized = async _ => {
             console.log('Version:', Module._dilithiumVersion());
-            var strPtr = Module._dilithiumGenerate();
-            var max_string_len = 10240;
-            var output_array = new Uint8Array(Module.HEAPU8.buffer, strPtr, max_string_len);
-            output_array = output_array.slice(0, output_array.indexOf(0));
-            var keyPair = new TextDecoder('utf8').decode(output_array);
-            console.log('Generated Key Pair:\n', keyPair);
+            var keyPtr = Module._dilithiumGenerate();
+            var keyPair = getCString(keyPtr, KEYPAIR_BYTES_B64);
+            var jsonKeyPair = JSON.parse(keyPair)
+            console.log('Generated Key Pair(JSON):\n', jsonKeyPair);
+            // console.log('Generated Key Pair:\n', keyPair);
             document.getElementById('logger').innerHTML = keyPair;
+
+            var m = 'TESTING SIGNING WITH CRYSTALS';
+            var sigPtr = Module._dilithiumSign(m, jsonKeyPair.d);
+            var sig = getCString(sigPtr, CRYPTO_BYTES_B64*2);
+            console.log('Signature of:', m);
+            console.log(sig);
+            var verified = Module._dilithiumVerify(sig, m, jsonKeyPair.x);
+            console.log('Verified message:', verified);
         };
     </script>
 </body>

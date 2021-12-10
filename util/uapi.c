@@ -159,9 +159,11 @@ int verify(const char *sig, const char *m, const char *pk)
     pk_err = Base64decode((char*) pk_d, (char*) pk);
 
     if (sig_err != CRYPTO_BYTES) {
+        if (DEBUG) printf("Error with sig, got %d bytes, expected %d", sig_err, CRYPTO_BYTES);
         return -2;
     }
     if (pk_err != CRYPTO_PUBLICKEYBYTES) {
+        if (DEBUG) printf("Error with sig, got %d bytes, expected %d", pk_err, CRYPTO_PUBLICKEYBYTES);
         return -3;
     }
 

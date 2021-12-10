@@ -3,7 +3,7 @@
 
 int dilithiumVersion(void);
 char* dilithiumGenerate(void);
-char* dilithiumSign(char *sm, const char *m, const char *sk);
+char* dilithiumSign(const char *m, const char *sk);
 int dilithiumVerify(const char *sig, const char *m, const char *pk);
 
 #endif

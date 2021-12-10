@@ -82,10 +82,14 @@ int generateKeys(void) {
 }
 int demo(void)
 {
-    printf("Running quick key generation and signing demo...");
+    printf("Running quick key generation and signing demo...\n");
     if (DEBUG)
         printf("Entering cli:main\n");
     printf("CRYPTO_BYTES: %d\n\n", CRYPTO_BYTES);
+    printf("CRYPTO_BYTES_B64: %d\n\n", CRYPTO_BYTES_B64);
+    printf("CRYPTO_PUBLICKEYBYTES_B64: %d\n\n", CRYPTO_PUBLICKEYBYTES_B64);
+    printf("CRYPTO_SECRETKEYBYTES_B64: %d\n\n", CRYPTO_SECRETKEYBYTES_B64);
+    
     struct Keypair keys;
     char keysString[CRYPTO_SECRETKEYBYTES_B64 + CRYPTO_PUBLICKEYBYTES_B64 + (CRYPTO_BYTES_B64 * 2) + 64];
     char signed_message[CRYPTO_BYTES_B64];
