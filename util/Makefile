@@ -21,7 +21,7 @@ AES_SOURCES = $(SOURCES) ../ref/fips202.c ../ref/aes256ctr.c ../ref/symmetric-ae
 AES_HEADERS = $(HEADERS) ../ref/fips202.h ../ref/aes256ctr.h
 
 WEBASM_COMPILER = emcc
-WEBASM_EXPORTS = _dilithiumGenerate, _dilithiumSign, _dilithiumVerify, _dilithiumVersion
+WEBASM_EXPORTS = _dilithiumGenerate, _dilithiumSign, _dilithiumVerify, _dilithiumVersion, _malloc
 # -s EXPORT_ALL=1 -s LINKABLE=1 may be desireable for some scenarios
 # -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap"]' 
 # -s ERROR_ON_UNDEFINED_SYMBOLS=0

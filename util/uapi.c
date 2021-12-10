@@ -105,7 +105,7 @@ int generate(struct Keypair *keypair)
 * Returns    0  (success)
 *           -1  (failure)
 *           -2  (failure, err encoding signature)
-*           -3  (failure, err decoding secret key key)
+*           -3  (failure, err decoding secret key)
 **************************************************/
 int sign(char *sm, const char *m, const char *sk)
 {
@@ -119,13 +119,26 @@ int sign(char *sm, const char *m, const char *sk)
 
     if (VDEBUG) printf("\tapi:sign::variables_initialized\n");
     
-    Base64decode((char *) sk_d, (const char*) sk);
+    if (Base64decode((char *) sk_d, (const char*) sk) != CRYPTO_SECRETKEYBYTES) {
+        return -3;
+    }
+    
     if (VDEBUG) printf("\tapi:sign::decoded_sk::%s\n", sk);
-    ret = crypto_sign_signature(sig, &siglen, (unsigned char*)m, mlen, sk_d);
+    
+    if (crypto_sign_signature(sig, &siglen, (unsigned char*)m, mlen, sk_d) != 0) {
+        return -1;
+    } 
+    
     if (VDEBUG) printf("\tapi:sign::signed\n");
-    Base64encode(sig_e, (const char*) sig, CRYPTO_BYTES);
+    
+    if(Base64encode(sig_e, (const char*) sig, CRYPTO_BYTES) != CRYPTO_BYTES_B64) {
+        return -2;
+    }
+    
     if (VDEBUG) printf("\tapi:sign::encoded_sig::%s\n", sig_e);
+    
     memcpy(sm, sig_e, CRYPTO_BYTES_B64);
+    
     if (VDEBUG) printf("\tapi:sign::copied_sig\n");
     if (VDEBUG) printf("\tapi:sign::return:%d\n", ret);
     

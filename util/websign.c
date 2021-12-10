@@ -31,7 +31,7 @@ char* dilithiumSign(const char *m, const char *sk)
     int ret = 0;
     ret = sign(sig_e, m, sk);
     if (ret != 0) {
-        strcpy(sig_e, "!!!!!!!!ERROR");
+        strcpy(sig_e, "!!!!!!!!ERROR_SIGNING");
     }
     return sig_e;
 }
