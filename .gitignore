@@ -21,6 +21,5 @@ tmillion3
 tmillion5
 .vscode
 build/
-*.wasm
 *.gch
 
