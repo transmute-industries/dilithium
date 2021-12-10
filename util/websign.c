@@ -25,12 +25,20 @@ char* dilithiumGenerate(void)
     return keysString;
 }
 
-char* dilithiumSign(char *sm, const char *m, const char *sk)
+char* dilithiumSign(const char *m, const char *sk)
 {
-    return "";
+    static char sig_e[CRYPTO_BYTES_B64];
+    int ret = 0;
+    ret = sign(sig_e, m, sk);
+    if (ret != 0) {
+        strcpy(sig_e, "ERROR");
+    }
+    return sig_e;
 }
 
 int dilithiumVerify(const char *sig, const char *m, const char *pk)
 {
-    return "";
+    static int ret = 0;
+    ret = verify(sig, m, pk);
+    return ret;
 }
